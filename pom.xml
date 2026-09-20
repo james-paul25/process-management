@@ -47,6 +47,17 @@
                     <mainClass>com.processmanagement.Main</mainClass>
                 </configuration>
             </plugin>
+            <!-- <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <release>21</release>
+                    <compilerArgs>
+                        <arg>-implicit:none</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin> -->
         </plugins>
     </build>
 </project>

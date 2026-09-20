@@ -1,1 +1,16 @@
+com/processmanagement/model/ProcessResult.class
+com/processmanagement/service/ProcessManager.class
+com/processmanagement/model/ProcessState.class
+com/processmanagement/controller/MainController$1.class
+com/processmanagement/scheduler/RoundRobinScheduler.class
+com/processmanagement/model/Process.class
+com/processmanagement/controller/MainController$2.class
+com/processmanagement/service/MemoryManager.class
+com/processmanagement/scheduler/SJFScheduler.class
+com/processmanagement/model/GanttEntry.class
+com/processmanagement/scheduler/PriorityScheduler.class
+com/processmanagement/model/SchedulingResult.class
+com/processmanagement/scheduler/FCFSScheduler.class
+com/processmanagement/scheduler/Scheduler.class
+com/processmanagement/controller/MainController.class
 com/processmanagement/Main.class

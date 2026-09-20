@@ -1,4 +1,4 @@
-package src.main.java.com.processmanagement.model;
+package com.processmanagement.model;
 
 /** One block in a Gantt chart: process PID running from start to end. */
 public class GanttEntry {

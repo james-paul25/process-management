@@ -1,0 +1,66 @@
+.root {
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -fx-background-color: #f4f6f8;
+}
+
+.header {
+    -fx-background-color: #1f2937;
+}
+
+.title-label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.subtitle-label {
+    -fx-text-fill: #cbd5e1;
+    -fx-font-size: 11px;
+}
+
+.section-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f2937;
+}
+
+.status-label {
+    -fx-text-fill: #2563eb;
+    -fx-font-style: italic;
+}
+
+.primary-button {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+}
+
+.primary-button:hover {
+    -fx-background-color: #1d4ed8;
+}
+
+.danger-button {
+    -fx-background-color: #dc2626;
+    -fx-text-fill: white;
+    -fx-background-radius: 4;
+}
+
+.danger-button:hover {
+    -fx-background-color: #b91c1c;
+}
+
+.state-diagram {
+    -fx-background-color: white;
+    -fx-background-radius: 6;
+}
+
+.state-box {
+    -fx-padding: 6 12 6 12;
+    -fx-background-color: #e5e7eb;
+    -fx-background-radius: 4;
+    -fx-font-weight: bold;
+}
+
+.state-box-active {
+    -fx-background-color: #22c55e;
+    -fx-text-fill: white;
+}

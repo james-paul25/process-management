@@ -1,6 +1,7 @@
-package src.main.java.com.processmanagement.scheduler;
+package com.processmanagement.scheduler;
 
 import com.processmanagement.model.*;
+import com.processmanagement.model.Process;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package src.main.java.com.processmanagement.model;
+package com.processmanagement.model;
 
 import java.util.List;
 

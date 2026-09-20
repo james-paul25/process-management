@@ -1,4 +1,4 @@
-package src.main.java.com.processmanagement.model;
+package com.processmanagement.model;
 
 /** Immutable result of a scheduling run for a single process. */
 public class ProcessResult {

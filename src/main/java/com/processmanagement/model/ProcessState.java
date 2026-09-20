@@ -1,4 +1,4 @@
-package src.main.java.com.processmanagement.model;
+package com.processmanagement.model;
 
 /**
  * The states a simulated process can be in, following the classic

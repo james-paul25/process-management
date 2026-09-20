@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.processmanagement.controller.MainController">
+
+    <top>
+        <VBox spacing="4" styleClass="header">
+            <padding>
+                <Insets top="14" right="18" bottom="10" left="18" />
+            </padding>
+            <Label text="Process Management Simulator" styleClass="title-label">
+                <font>
+                    <Font size="22" />
+                </font>
+            </Label>
+            <Label text="Round 1: Process lifecycle   •   Round 2: Swapping and CPU scheduling"
+                styleClass="subtitle-label" />
+        </VBox>
+    </top>
+
+    <center>
+        <TabPane tabClosingPolicy="UNAVAILABLE">
+
+            <Tab text="Processes">
+                <VBox spacing="10">
+                    <padding>
+                        <Insets top="12" right="16" bottom="12" left="16" />
+                    </padding>
+
+                    <TitledPane text="Create Process" collapsible="false">
+                        <HBox spacing="8" alignment="CENTER_LEFT">
+                            <padding>
+                                <Insets top="8" right="8" bottom="8" left="8" />
+                            </padding>
+                            <Label text="Name:" />
+                            <TextField fx:id="nameField" promptText="e.g. P1" prefWidth="90" />
+                            <Label text="Arrival:" />
+                            <TextField fx:id="arrivalField" promptText="0" prefWidth="60" />
+                            <Label text="Burst:" />
+                            <TextField fx:id="burstField" promptText="5" prefWidth="60" />
+                            <Label text="Priority:" />
+                            <TextField fx:id="priorityField" promptText="1" prefWidth="60" />
+                            <Button text="Add Process" onAction="#handleAddProcess"
+                                styleClass="primary-button" />
+                        </HBox>
+                    </TitledPane>
+
+                    <TableView fx:id="processTable" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colPid" text="PID" prefWidth="70" />
+                            <TableColumn fx:id="colName" text="Name" prefWidth="90" />
+                            <TableColumn fx:id="colState" text="State" prefWidth="110" />
+                            <TableColumn fx:id="colArrival" text="Arrival" prefWidth="70" />
+                            <TableColumn fx:id="colBurst" text="Burst" prefWidth="70" />
+                            <TableColumn fx:id="colRemaining" text="Remaining" prefWidth="80" />
+                            <TableColumn fx:id="colPriority" text="Priority" prefWidth="70" />
+                            <TableColumn fx:id="colOsPid" text="Real OS PID" prefWidth="90" />
+                        </columns>
+                    </TableView>
+
+                    <TitledPane text="Process Actions" collapsible="false">
+                        <VBox spacing="8">
+                            <padding>
+                                <Insets top="8" right="8" bottom="8" left="8" />
+                            </padding>
+                            <HBox spacing="8" alignment="CENTER_LEFT">
+                                <Label text="PID:" />
+                                <TextField fx:id="actionPidField"
+                                    promptText="1000 (or select a row)" prefWidth="140" />
+                                <Button text="Start" onAction="#handleStart" />
+                                <Button text="Stop (→ Waiting)" onAction="#handleStop" />
+                                <Button text="Resume (→ Ready)" onAction="#handleResume" />
+                                <Button text="Terminate" onAction="#handleTerminate"
+                                    styleClass="danger-button" />
+                            </HBox>
+                            <HBox spacing="8" alignment="CENTER_LEFT">
+                                <Button text="Execute (Simulated)"
+                                    onAction="#handleExecuteSimulated" styleClass="primary-button" />
+                                <Button text="Execute (Real OS Process)"
+                                    onAction="#handleExecuteReal" />
+                                <Label fx:id="processStatusLabel" styleClass="status-label" />
+                            </HBox>
+                        </VBox>
+                    </TitledPane>
+
+                    <TitledPane text="State Transition Diagram (selected process)"
+                        collapsible="false">
+                        <HBox spacing="6" alignment="CENTER_LEFT" styleClass="state-diagram">
+                            <padding>
+                                <Insets top="10" right="8" bottom="10" left="8" />
+                            </padding>
+                            <Label fx:id="stateNew" text="NEW" styleClass="state-box" />
+                            <Label text="→" />
+                            <Label fx:id="stateReady" text="READY" styleClass="state-box" />
+                            <Label text="→" />
+                            <Label fx:id="stateRunning" text="RUNNING" styleClass="state-box" />
+                            <Label text="→" />
+                            <Label fx:id="stateWaiting" text="WAITING" styleClass="state-box" />
+                            <Label text="→" />
+                            <Label fx:id="stateTerminated" text="TERMINATED" styleClass="state-box" />
+                        </HBox>
+                    </TitledPane>
+                </VBox>
+            </Tab>
+
+            <Tab text="Scheduling">
+                <VBox spacing="10">
+                    <padding>
+                        <Insets top="12" right="16" bottom="12" left="16" />
+                    </padding>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Scheduling Algorithm:" />
+                        <ComboBox fx:id="algorithmCombo" prefWidth="230" />
+                        <Label text="Time Quantum:" />
+                        <TextField fx:id="quantumField" promptText="2" prefWidth="50" />
+                        <Button text="Run Scheduling" onAction="#handleRunScheduling"
+                            styleClass="primary-button" />
+                    </HBox>
+
+                    <TableView fx:id="resultTable" prefHeight="220">
+                        <columns>
+                            <TableColumn fx:id="colResPid" text="PID" prefWidth="60" />
+                            <TableColumn fx:id="colResName" text="Name" prefWidth="80" />
+                            <TableColumn fx:id="colResArrival" text="Arrival" prefWidth="70" />
+                            <TableColumn fx:id="colResBurst" text="Burst" prefWidth="70" />
+                            <TableColumn fx:id="colResPriority" text="Priority" prefWidth="70" />
+                            <TableColumn fx:id="colResCompletion" text="Completion" prefWidth="90" />
+                            <TableColumn fx:id="colResWaiting" text="Waiting" prefWidth="80" />
+                            <TableColumn fx:id="colResTurnaround" text="Turnaround" prefWidth="90" />
+                            <TableColumn fx:id="colResResponse" text="Response" prefWidth="80" />
+                        </columns>
+                    </TableView>
+
+                    <HBox spacing="24">
+                        <Label fx:id="avgWaitingLabel" text="Average Waiting Time: -" />
+                        <Label fx:id="avgTurnaroundLabel" text="Average Turnaround Time: -" />
+                        <Label fx:id="avgResponseLabel" text="Average Response Time: -" />
+                    </HBox>
+
+                    <Label text="Gantt Chart" styleClass="section-label" />
+                    <ScrollPane fitToHeight="true" prefHeight="120">
+                        <HBox fx:id="ganttBox" spacing="2" alignment="CENTER_LEFT">
+                            <padding>
+                                <Insets top="8" right="8" bottom="8" left="8" />
+                            </padding>
+                        </HBox>
+                    </ScrollPane>
+                </VBox>
+            </Tab>
+
+            <Tab text="Memory &amp; Swapping">
+                <VBox spacing="10">
+                    <padding>
+                        <Insets top="12" right="16" bottom="12" left="16" />
+                    </padding>
+
+                    <Label fx:id="memoryCapacityLabel" text="Main memory capacity: -"
+                        styleClass="section-label" />
+
+                    <HBox spacing="16" VBox.vgrow="ALWAYS">
+                        <VBox spacing="6" HBox.hgrow="ALWAYS">
+                            <Label text="Main Memory" styleClass="section-label" />
+                            <ListView fx:id="mainMemoryList" VBox.vgrow="ALWAYS" />
+                        </VBox>
+                        <VBox spacing="6" HBox.hgrow="ALWAYS">
+                            <Label text="Swap / Disk" styleClass="section-label" />
+                            <ListView fx:id="swapList" VBox.vgrow="ALWAYS" />
+                        </VBox>
+                    </HBox>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="PID:" />
+                        <TextField fx:id="swapPidField" promptText="1000" prefWidth="80" />
+                        <Button text="Load to Memory" onAction="#handleLoadToMemory" />
+                        <Button text="Swap Out" onAction="#handleSwapOut" />
+                        <Button text="Swap In" onAction="#handleSwapIn" />
+                        <Label fx:id="memoryStatusLabel" styleClass="status-label" />
+                    </HBox>
+                </VBox>
+            </Tab>
+
+        </TabPane>
+    </center>
+
+</BorderPane>

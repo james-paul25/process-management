@@ -1,1 +1,14 @@
 /home/james-paul25/Documents/repo/process-management/src/main/java/com/processmanagement/Main.java
+/home/james-paul25/Documents/repo/process-management/src/main/java/com/processmanagement/controller/MainController.java
+/home/james-paul25/Documents/repo/process-management/src/main/java/com/processmanagement/model/GanttEntry.java
+/home/james-paul25/Documents/repo/process-management/src/main/java/com/processmanagement/model/Process.java
+/home/james-paul25/Documents/repo/process-management/src/main/java/com/processmanagement/model/ProcessResult.java
+/home/james-paul25/Documents/repo/process-management/src/main/java/com/processmanagement/model/ProcessState.java
+/home/james-paul25/Documents/repo/process-management/src/main/java/com/processmanagement/model/SchedulingResult.java
+/home/james-paul25/Documents/repo/process-management/src/main/java/com/processmanagement/scheduler/FCFSScheduler.java
+/home/james-paul25/Documents/repo/process-management/src/main/java/com/processmanagement/scheduler/PriorityScheduler.java
+/home/james-paul25/Documents/repo/process-management/src/main/java/com/processmanagement/scheduler/RoundRobinScheduler.java
+/home/james-paul25/Documents/repo/process-management/src/main/java/com/processmanagement/scheduler/SJFScheduler.java
+/home/james-paul25/Documents/repo/process-management/src/main/java/com/processmanagement/scheduler/Scheduler.java
+/home/james-paul25/Documents/repo/process-management/src/main/java/com/processmanagement/service/MemoryManager.java
+/home/james-paul25/Documents/repo/process-management/src/main/java/com/processmanagement/service/ProcessManager.java

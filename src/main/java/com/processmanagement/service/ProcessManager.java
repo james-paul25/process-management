@@ -1,4 +1,4 @@
-package src.main.java.com.processmanagement.service;
+package com.processmanagement.service;
 
 import com.processmanagement.model.Process;
 import com.processmanagement.model.ProcessState;

@@ -1,4 +1,4 @@
-package src.main.java.com.processmanagement.model;
+package com.processmanagement.model;
 
 import javafx.beans.property.*;
 
