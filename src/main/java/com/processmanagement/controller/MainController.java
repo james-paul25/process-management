@@ -27,54 +27,99 @@ import java.util.function.Consumer;
 public class MainController implements Initializable {
 
     // ----- Processes tab -----
-    @FXML private TextField nameField;
-    @FXML private TextField arrivalField;
-    @FXML private TextField burstField;
-    @FXML private TextField priorityField;
+    @FXML
+    private TextField nameField;
+    @FXML
+    private TextField arrivalField;
+    @FXML
+    private TextField burstField;
+    @FXML
+    private TextField priorityField;
 
-    @FXML private TableView<Process> processTable;
-    @FXML private TableColumn<Process, Integer> colPid;
-    @FXML private TableColumn<Process, String> colName;
-    @FXML private TableColumn<Process, ProcessState> colState;
-    @FXML private TableColumn<Process, Integer> colArrival;
-    @FXML private TableColumn<Process, Integer> colBurst;
-    @FXML private TableColumn<Process, Integer> colRemaining;
-    @FXML private TableColumn<Process, Integer> colPriority;
-    @FXML private TableColumn<Process, Long> colOsPid;
+    @FXML
+    private TableView<Process> processTable;
+    @FXML
+    private TableColumn<Process, Integer> colPid;
+    @FXML
+    private TableColumn<Process, String> colName;
+    @FXML
+    private TableColumn<Process, ProcessState> colState;
+    @FXML
+    private TableColumn<Process, Integer> colArrival;
+    @FXML
+    private TableColumn<Process, Integer> colBurst;
+    @FXML
+    private TableColumn<Process, Integer> colRemaining;
+    @FXML
+    private TableColumn<Process, Integer> colPriority;
+    @FXML
+    private TableColumn<Process, Long> colOsPid;
 
-    @FXML private TextField actionPidField;
-    @FXML private Label processStatusLabel;
+    @FXML
+    private TextField actionPidField;
+    @FXML
+    private Label processStatusLabel;
+    @FXML
+    private TextField commandField;
+    @FXML
+    private TextArea outputArea;
 
-    @FXML private Label stateNew;
-    @FXML private Label stateReady;
-    @FXML private Label stateRunning;
-    @FXML private Label stateWaiting;
-    @FXML private Label stateTerminated;
+    @FXML
+    private Label stateNew;
+    @FXML
+    private Label stateReady;
+    @FXML
+    private Label stateRunning;
+    @FXML
+    private Label stateWaiting;
+    @FXML
+    private Label stateTerminated;
 
     // ----- Scheduling tab -----
-    @FXML private ComboBox<String> algorithmCombo;
-    @FXML private TextField quantumField;
-    @FXML private TableView<ProcessResult> resultTable;
-    @FXML private TableColumn<ProcessResult, Integer> colResPid;
-    @FXML private TableColumn<ProcessResult, String> colResName;
-    @FXML private TableColumn<ProcessResult, Integer> colResArrival;
-    @FXML private TableColumn<ProcessResult, Integer> colResBurst;
-    @FXML private TableColumn<ProcessResult, Integer> colResPriority;
-    @FXML private TableColumn<ProcessResult, Integer> colResCompletion;
-    @FXML private TableColumn<ProcessResult, Integer> colResWaiting;
-    @FXML private TableColumn<ProcessResult, Integer> colResTurnaround;
-    @FXML private TableColumn<ProcessResult, Integer> colResResponse;
-    @FXML private Label avgWaitingLabel;
-    @FXML private Label avgTurnaroundLabel;
-    @FXML private Label avgResponseLabel;
-    @FXML private HBox ganttBox;
+    @FXML
+    private ComboBox<String> algorithmCombo;
+    @FXML
+    private TextField quantumField;
+    @FXML
+    private TableView<ProcessResult> resultTable;
+    @FXML
+    private TableColumn<ProcessResult, Integer> colResPid;
+    @FXML
+    private TableColumn<ProcessResult, String> colResName;
+    @FXML
+    private TableColumn<ProcessResult, Integer> colResArrival;
+    @FXML
+    private TableColumn<ProcessResult, Integer> colResBurst;
+    @FXML
+    private TableColumn<ProcessResult, Integer> colResPriority;
+    @FXML
+    private TableColumn<ProcessResult, Integer> colResCompletion;
+    @FXML
+    private TableColumn<ProcessResult, Integer> colResWaiting;
+    @FXML
+    private TableColumn<ProcessResult, Integer> colResTurnaround;
+    @FXML
+    private TableColumn<ProcessResult, Integer> colResResponse;
+    @FXML
+    private Label avgWaitingLabel;
+    @FXML
+    private Label avgTurnaroundLabel;
+    @FXML
+    private Label avgResponseLabel;
+    @FXML
+    private HBox ganttBox;
 
     // ----- Memory tab -----
-    @FXML private Label memoryCapacityLabel;
-    @FXML private ListView<Process> mainMemoryList;
-    @FXML private ListView<Process> swapList;
-    @FXML private TextField swapPidField;
-    @FXML private Label memoryStatusLabel;
+    @FXML
+    private Label memoryCapacityLabel;
+    @FXML
+    private ListView<Process> mainMemoryList;
+    @FXML
+    private ListView<Process> swapList;
+    @FXML
+    private TextField swapPidField;
+    @FXML
+    private Label memoryStatusLabel;
 
     private final ProcessManager processManager = new ProcessManager();
     private final MemoryManager memoryManager = new MemoryManager(3);
@@ -133,8 +178,7 @@ public class MainController implements Initializable {
                 "First Come First Served (FCFS)",
                 "Shortest Job First (SJF)",
                 "Round Robin",
-                "Priority Scheduling"
-        ));
+                "Priority Scheduling"));
         algorithmCombo.getSelectionModel().selectFirst();
     }
 
@@ -219,10 +263,17 @@ public class MainController implements Initializable {
     @FXML
     private void handleExecuteReal() {
         withSelectedOrTypedProcess(actionPidField, processStatusLabel, p -> {
+            String commandText = commandField.getText();
+            List<String> command = (commandText == null || commandText.isBlank())
+                    ? processManager.defaultCommandFor(p)
+                    : List.of(commandText.trim().split("\\s+"));
+
+            outputArea.clear();
             try {
-                java.lang.Process osProcess = processManager.executeReal(p,
-                        () -> showStatus(processStatusLabel,
-                                "PID " + p.getPid() + " (OS PID " + p.getOsPid() + ") finished.", false));
+                java.lang.Process osProcess = processManager.executeReal(p, command,
+                        line -> outputArea.appendText(line + System.lineSeparator()),
+                        () -> showStatus(processStatusLabel, "PID " + p.getPid() + " (OS PID "
+                                + p.getOsPid() + ") finished, exit code " + p.getExitCode() + ".", false));
                 showStatus(processStatusLabel,
                         "Launched real OS process for PID " + p.getPid() + " -> OS PID " + osProcess.pid(), false);
             } catch (Exception e) {
@@ -231,10 +282,20 @@ public class MainController implements Initializable {
         });
     }
 
+    @FXML
+    private void handleKillReal() {
+        withSelectedOrTypedProcess(actionPidField, processStatusLabel, p -> {
+            processManager.killReal(p, false); // SIGTERM; pass true for SIGKILL if it won't die
+            showStatus(processStatusLabel, "Sent kill signal to PID " + p.getPid()
+                    + " (OS PID " + p.getOsPid() + ").", false);
+        });
+    }
+
     private void updateStateDiagram(Process p) {
         List<Label> all = List.of(stateNew, stateReady, stateRunning, stateWaiting, stateTerminated);
         all.forEach(l -> l.getStyleClass().remove("state-box-active"));
-        if (p == null) return;
+        if (p == null)
+            return;
 
         Label active = switch (p.getState()) {
             case NEW -> stateNew;
@@ -276,8 +337,10 @@ public class MainController implements Initializable {
 
         resultTable.setItems(FXCollections.observableArrayList(result.getResults()));
         avgWaitingLabel.setText(String.format(Locale.US, "Average Waiting Time: %.2f", result.getAverageWaitingTime()));
-        avgTurnaroundLabel.setText(String.format(Locale.US, "Average Turnaround Time: %.2f", result.getAverageTurnaroundTime()));
-        avgResponseLabel.setText(String.format(Locale.US, "Average Response Time: %.2f", result.getAverageResponseTime()));
+        avgTurnaroundLabel
+                .setText(String.format(Locale.US, "Average Turnaround Time: %.2f", result.getAverageTurnaroundTime()));
+        avgResponseLabel
+                .setText(String.format(Locale.US, "Average Response Time: %.2f", result.getAverageResponseTime()));
 
         drawGanttChart(result.getGanttEntries());
     }
@@ -360,7 +423,8 @@ public class MainController implements Initializable {
     }
 
     private int parseIntOrDefault(String text, int defaultValue) {
-        if (text == null || text.isBlank()) return defaultValue;
+        if (text == null || text.isBlank())
+            return defaultValue;
         return Integer.parseInt(text.trim());
     }
 

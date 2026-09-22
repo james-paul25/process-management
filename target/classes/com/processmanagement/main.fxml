@@ -82,10 +82,21 @@
                             <HBox spacing="8" alignment="CENTER_LEFT">
                                 <Button text="Execute (Simulated)"
                                     onAction="#handleExecuteSimulated" styleClass="primary-button" />
+                                <Label text="Command:" />
+                                <TextField fx:id="commandField"
+                                    promptText="leave blank for default, or e.g. echo hello"
+                                    prefWidth="220" />
                                 <Button text="Execute (Real OS Process)"
                                     onAction="#handleExecuteReal" />
+                                <Button text="Kill" onAction="#handleKillReal"
+                                    styleClass="danger-button" />
+                            </HBox>
+                            <HBox spacing="8" alignment="CENTER_LEFT">
                                 <Label fx:id="processStatusLabel" styleClass="status-label" />
                             </HBox>
+                            <Label text="Real OS Process Output" styleClass="section-label" />
+                            <TextArea fx:id="outputArea" editable="false" wrapText="true"
+                                prefRowCount="6" />
                         </VBox>
                     </TitledPane>
 

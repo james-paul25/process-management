@@ -18,6 +18,7 @@ public class Process {
     private final IntegerProperty remainingTime;
     private final IntegerProperty priority;
     private final LongProperty osPid; // -1 means "not backed by a real OS process"
+    private final IntegerProperty exitCode; // Integer.MIN_VALUE means "has not exited yet"
 
     public Process(int pid, String name, int arrivalTime, int burstTime, int priority) {
         this.pid = new SimpleIntegerProperty(pid);
@@ -28,35 +29,100 @@ public class Process {
         this.remainingTime = new SimpleIntegerProperty(burstTime);
         this.priority = new SimpleIntegerProperty(priority);
         this.osPid = new SimpleLongProperty(-1);
+        this.exitCode = new SimpleIntegerProperty(Integer.MIN_VALUE);
     }
 
-    public int getPid() { return pid.get(); }
-    public IntegerProperty pidProperty() { return pid; }
+    public int getPid() {
+        return pid.get();
+    }
 
-    public String getName() { return name.get(); }
-    public void setName(String value) { name.set(value); }
-    public StringProperty nameProperty() { return name; }
+    public IntegerProperty pidProperty() {
+        return pid;
+    }
 
-    public ProcessState getState() { return state.get(); }
-    public void setState(ProcessState value) { state.set(value); }
-    public ObjectProperty<ProcessState> stateProperty() { return state; }
+    public String getName() {
+        return name.get();
+    }
 
-    public int getArrivalTime() { return arrivalTime.get(); }
-    public IntegerProperty arrivalTimeProperty() { return arrivalTime; }
+    public void setName(String value) {
+        name.set(value);
+    }
 
-    public int getBurstTime() { return burstTime.get(); }
-    public IntegerProperty burstTimeProperty() { return burstTime; }
+    public StringProperty nameProperty() {
+        return name;
+    }
 
-    public int getRemainingTime() { return remainingTime.get(); }
-    public void setRemainingTime(int value) { remainingTime.set(value); }
-    public IntegerProperty remainingTimeProperty() { return remainingTime; }
+    public ProcessState getState() {
+        return state.get();
+    }
 
-    public int getPriority() { return priority.get(); }
-    public IntegerProperty priorityProperty() { return priority; }
+    public void setState(ProcessState value) {
+        state.set(value);
+    }
 
-    public long getOsPid() { return osPid.get(); }
-    public void setOsPid(long value) { osPid.set(value); }
-    public LongProperty osPidProperty() { return osPid; }
+    public ObjectProperty<ProcessState> stateProperty() {
+        return state;
+    }
+
+    public int getArrivalTime() {
+        return arrivalTime.get();
+    }
+
+    public IntegerProperty arrivalTimeProperty() {
+        return arrivalTime;
+    }
+
+    public int getBurstTime() {
+        return burstTime.get();
+    }
+
+    public IntegerProperty burstTimeProperty() {
+        return burstTime;
+    }
+
+    public int getRemainingTime() {
+        return remainingTime.get();
+    }
+
+    public void setRemainingTime(int value) {
+        remainingTime.set(value);
+    }
+
+    public IntegerProperty remainingTimeProperty() {
+        return remainingTime;
+    }
+
+    public int getPriority() {
+        return priority.get();
+    }
+
+    public IntegerProperty priorityProperty() {
+        return priority;
+    }
+
+    public long getOsPid() {
+        return osPid.get();
+    }
+
+    public void setOsPid(long value) {
+        osPid.set(value);
+    }
+
+    public LongProperty osPidProperty() {
+        return osPid;
+    }
+
+    public int getExitCode() {
+        return exitCode.get();
+    }
+
+    public void setExitCode(int value) {
+        exitCode.set(value);
+    }
+
+    public IntegerProperty exitCodeProperty() {
+        return exitCode;
+    }
 
     @Override
     public String toString() {
