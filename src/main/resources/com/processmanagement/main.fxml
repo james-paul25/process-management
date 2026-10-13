@@ -120,7 +120,7 @@
                 </VBox>
             </Tab>
 
-            <Tab text="Scheduling">
+            <!-- <Tab text="Scheduling">
                 <VBox spacing="10">
                     <padding>
                         <Insets top="12" right="16" bottom="12" left="16" />
@@ -164,7 +164,7 @@
                         </HBox>
                     </ScrollPane>
                 </VBox>
-            </Tab>
+            </Tab> -->
 
             <Tab text="Memory &amp; Swapping">
                 <VBox spacing="10">
