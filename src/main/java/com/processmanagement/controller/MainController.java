@@ -138,7 +138,7 @@ public class MainController implements Initializable {
         // setupResultTable();
         // setupSchedulingControls();
         setupMemoryTab();
-
+        restrictToDigits(arrivalField, burstField, priorityField);
         processTable.getSelectionModel().selectedItemProperty()
                 .addListener((obs, oldVal, newVal) -> updateStateDiagram(newVal));
     }
@@ -551,5 +551,13 @@ public class MainController implements Initializable {
         label.setText(message);
         label.setStyle(isError ? "-fx-text-fill: #dc2626; -fx-font-style: italic;"
                 : "-fx-text-fill: #2563eb; -fx-font-style: italic;");
+    }
+
+    /** Allows only digits (max 9, so Integer.parseInt can't overflow). */
+    private void restrictToDigits(TextField... fields) {
+        for (TextField field : fields) {
+            field.setTextFormatter(new TextFormatter<String>(
+                    change -> change.getControlNewText().matches("\\d{0,9}") ? change : null));
+        }
     }
 }
