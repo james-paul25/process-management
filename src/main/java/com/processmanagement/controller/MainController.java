@@ -13,6 +13,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
@@ -186,6 +190,118 @@ public class MainController implements Initializable {
         memoryCapacityLabel.setText("Main memory capacity: " + memoryManager.getCapacity() + " processes");
         mainMemoryList.setItems(memoryManager.getMainMemory());
         swapList.setItems(memoryManager.getSwapSpace());
+
+        configureDragAndDrop(mainMemoryList, true);
+        configureDragAndDrop(swapList, false);
+    }
+
+    // ---------- Drag and drop (Memory tab) ----------
+
+    private void configureDragAndDrop(ListView<Process> list, boolean isMainMemory) {
+        list.setCellFactory(lv -> {
+            ListCell<Process> cell = new ListCell<>() {
+                @Override
+                protected void updateItem(Process item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : item.toString());
+                }
+            };
+
+            // Start dragging a process
+            cell.setOnDragDetected(e -> {
+                if (cell.isEmpty() || cell.getItem() == null)
+                    return;
+                Dragboard db = cell.startDragAndDrop(TransferMode.MOVE);
+                ClipboardContent content = new ClipboardContent();
+                content.putString(String.valueOf(cell.getItem().getPid()));
+                db.setContent(content);
+                e.consume();
+            });
+
+            // Dropping on a specific cell: swap with that process
+            cell.setOnDragOver(e -> {
+                if (e.getGestureSource() != cell && e.getDragboard().hasString()) {
+                    e.acceptTransferModes(TransferMode.MOVE);
+                }
+                e.consume();
+            });
+            cell.setOnDragDropped(e -> handleDrop(e, cell.getItem(), isMainMemory));
+
+            return cell;
+        });
+
+        // Dropping on the empty area of the list: move the process there
+        list.setOnDragOver(e -> {
+            if (e.getDragboard().hasString())
+                e.acceptTransferModes(TransferMode.MOVE);
+            e.consume();
+        });
+        list.setOnDragDropped(e -> handleDrop(e, null, isMainMemory));
+    }
+
+    /**
+     * target = the process the item was dropped on (null if dropped on empty
+     * space).
+     */
+    private void handleDrop(DragEvent e, Process target, boolean targetIsMain) {
+        boolean success = false;
+        Dragboard db = e.getDragboard();
+        if (db.hasString()) {
+            try {
+                int pid = Integer.parseInt(db.getString());
+                Optional<Process> dragged = processManager.findByPid(pid);
+                if (dragged.isPresent()) {
+                    success = moveProcess(dragged.get(), target, targetIsMain);
+                } else {
+                    showStatus(memoryStatusLabel, "No process found with PID " + pid + ".", true);
+                }
+            } catch (NumberFormatException ex) {
+                showStatus(memoryStatusLabel, "Invalid drag data.", true);
+            }
+        } else {
+            showStatus(memoryStatusLabel, "Nothing to drop.", true);
+        }
+        e.setDropCompleted(success);
+        e.consume();
+    }
+
+    private boolean moveProcess(Process dragged, Process target, boolean targetIsMain) {
+        boolean fromMain = memoryManager.getMainMemory().contains(dragged);
+        String where = targetIsMain ? "Main Memory" : "Swap/Disk";
+
+        if (fromMain == targetIsMain) {
+            showStatus(memoryStatusLabel, "PID " + dragged.getPid() + " is already in " + where
+                    + ". Drop it on the other list.", true);
+            return false;
+        }
+
+        boolean ok;
+        if (target != null) {
+            // Dropped on a process in the other list -> exchange the two
+            ok = fromMain ? memoryManager.exchange(dragged, target)
+                    : memoryManager.exchange(target, dragged);
+            Process swappedIn = fromMain ? target : dragged;
+            Process swappedOut = fromMain ? dragged : target;
+            showStatus(memoryStatusLabel, ok
+                    ? "Swapped: PID " + swappedIn.getPid() + " -> main memory, PID "
+                            + swappedOut.getPid() + " -> swap/disk."
+                    : "Could not swap PID " + dragged.getPid() + " with PID " + target.getPid() + ".", !ok);
+        } else if (targetIsMain) {
+            ok = memoryManager.swapIn(dragged);
+            showStatus(memoryStatusLabel, ok
+                    ? "PID " + dragged.getPid() + " swapped into main memory."
+                    : "Main memory is full. Drop onto a process in Main Memory to swap with it.", !ok);
+        } else {
+            ok = memoryManager.swapOut(dragged);
+            showStatus(memoryStatusLabel, ok
+                    ? "PID " + dragged.getPid() + " swapped out to disk."
+                    : "Could not swap out PID " + dragged.getPid() + ".", !ok);
+        }
+
+        mainMemoryList.refresh(); // toString() includes state, which isn't observable
+        swapList.refresh();
+        processTable.refresh();
+        return ok;
     }
 
     // ---------- Processes tab actions ----------
@@ -206,14 +322,17 @@ public class MainController implements Initializable {
             }
 
             Process p = processManager.createProcess(name, arrival, burst, priority);
-            memoryManager.loadToMemory(p); // auto-place into memory while there is room
+            boolean inMemory = memoryManager.admit(p); // memory if there is room, otherwise swap
 
             nameField.clear();
             arrivalField.clear();
             burstField.clear();
             priorityField.clear();
 
-            showStatus(processStatusLabel, "Created process PID " + p.getPid() + ".", false);
+            showStatus(processStatusLabel, "Created process PID " + p.getPid()
+                    + (inMemory ? " (loaded into main memory)." : " (memory full, placed in swap/disk)."), false);
+            showStatus(memoryStatusLabel, "PID " + p.getPid()
+                    + (inMemory ? " added to main memory." : " added to swap/disk (memory full)."), false);
         } catch (NumberFormatException e) {
             showStatus(processStatusLabel, "Arrival, Burst and Priority must be valid integers.", true);
         }

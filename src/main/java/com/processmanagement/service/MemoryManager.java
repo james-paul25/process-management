@@ -20,12 +20,21 @@ public class MemoryManager {
         this.capacity = capacity;
     }
 
-    public int getCapacity() { return capacity; }
-    public ObservableList<Process> getMainMemory() { return mainMemory; }
-    public ObservableList<Process> getSwapSpace() { return swapSpace; }
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public ObservableList<Process> getMainMemory() {
+        return mainMemory;
+    }
+
+    public ObservableList<Process> getSwapSpace() {
+        return swapSpace;
+    }
 
     public boolean loadToMemory(Process p) {
-        if (mainMemory.contains(p) || mainMemory.size() >= capacity) return false;
+        if (mainMemory.contains(p) || mainMemory.size() >= capacity)
+            return false;
         swapSpace.remove(p);
         mainMemory.add(p);
         if (p.getState() != ProcessState.TERMINATED) {
@@ -35,7 +44,8 @@ public class MemoryManager {
     }
 
     public boolean swapOut(Process p) {
-        if (!mainMemory.contains(p)) return false;
+        if (!mainMemory.contains(p))
+            return false;
         mainMemory.remove(p);
         swapSpace.add(p);
         p.setState(ProcessState.SWAPPED_OUT);
@@ -43,10 +53,42 @@ public class MemoryManager {
     }
 
     public boolean swapIn(Process p) {
-        if (!swapSpace.contains(p) || mainMemory.size() >= capacity) return false;
+        if (!swapSpace.contains(p) || mainMemory.size() >= capacity)
+            return false;
         swapSpace.remove(p);
         mainMemory.add(p);
         p.setState(ProcessState.READY);
+        return true;
+    }
+
+    /**
+     * Places a new process in main memory if there is room,
+     * otherwise sends it straight to swap/disk.
+     * 
+     * @return true if it ended up in main memory, false if it went to swap
+     */
+    public boolean admit(Process p) {
+        if (loadToMemory(p)) {
+            return true;
+        }
+        if (!mainMemory.contains(p) && !swapSpace.contains(p)) {
+            swapSpace.add(p);
+            p.setState(ProcessState.SWAPPED_OUT);
+        }
+        return false;
+    }
+
+    /** Swaps a process in main memory with one in swap/disk, in place. */
+    public boolean exchange(Process inMemory, Process inSwap) {
+        int memIdx = mainMemory.indexOf(inMemory);
+        int swapIdx = swapSpace.indexOf(inSwap);
+        if (memIdx < 0 || swapIdx < 0)
+            return false;
+
+        mainMemory.set(memIdx, inSwap);
+        swapSpace.set(swapIdx, inMemory);
+        inSwap.setState(ProcessState.READY);
+        inMemory.setState(ProcessState.SWAPPED_OUT);
         return true;
     }
 }
